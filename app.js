@@ -11,7 +11,8 @@ const teacherRoute = require("./api/routes/teacher");
 const userRoute = require("./api/routes/user");
 
 const app = express();
-mongoose.connect(process.env.URI);
+// mongoose.connect(process.env.URI);
+mongoose.connect('mongodb+srv://nilkul:CMdHYrKen5mYTnnd@cluster0.ebp2n.mongodb.net/?retryWrites=true&w=majority');
 mongoose.connection.on("error", (err) => {
   console.log("Mongo DB connection error: ", err);
 });
