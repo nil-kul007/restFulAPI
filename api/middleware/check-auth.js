@@ -7,9 +7,9 @@ module.exports = (req, res, next) => {
         next();
     } catch (err) {
         res.status(401).json({
-            errorCode: '00011',
-            message: 'Unauthorised user token',
-            error:err
-        })
+          code: "3000",
+          message: "Unauthorised user token",
+          error: err,
+        });
     }
 }

@@ -22,7 +22,7 @@ router.get("/", checkAuth, (req, res, next) => {
       });
     })
     .catch((err) => {
-      res.status(404).json({ error: err });
+      res.status(404).json({ code: "2001", error: err });
     });
 });
 
@@ -44,7 +44,8 @@ router.post("/", checkAuth, (req, res, next) => {
       // console.log(result);
       if (result.length) {
         res.status(500).json({
-          message: `student found with same rollNo and classNo`,
+          code: "2002",
+          message: `Student found with same rollNo and classNo`,
           student: result,
         });
       } else {
@@ -58,7 +59,7 @@ router.post("/", checkAuth, (req, res, next) => {
       });
     })
     .catch((err) => {
-      res.status(500).json({ error: err });
+      res.status(500).json({ code: "2001", error: err });
     });
 });
 
@@ -69,10 +70,10 @@ router.get("/:studentId", checkAuth, (req, res, next) => {
     .then((result) => {
       result
         ? res.status(200).json(result)
-        : res.status(404).json({ error: "No records found" });
+        : res.status(404).json({ code: "2003", error: "No records found" });
     })
     .catch((err) => {
-      res.status(500).json({ error: err });
+      res.status(500).json({ code: "2001", error: err });
     });
 });
 
@@ -92,7 +93,7 @@ router.patch("/:studentId", checkAuth, (req, res, next) => {
       });
     })
     .catch((err) => {
-      res.status(500).json(err);
+      res.status(500).json({ code: "2001", error: err });
     });
 });
 
@@ -107,7 +108,7 @@ router.delete("/:studentId", checkAuth, (req, res, next) => {
       });
     })
     .catch((err) => {
-      res.status(500).json({ error: err });
+      res.status(500).json({ code: "2001", error: err });
     });
 });
 
@@ -136,7 +137,7 @@ router.put("/:studentId", checkAuth, (req, res, next) => {
       });
     })
     .catch((err) => {
-      res.status(500).json({ error: err });
+      res.status(500).json({ code: "2001", error: err });
     });
 });
 

@@ -9,7 +9,9 @@ const router = express.Router();
 router.post("/signup", (req, res, next) => {
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if (err) {
-      res.status(500).json({ error: err, message: "Error found in password" });
+      res
+        .status(500)
+        .json({ code: "1004", error: err, message: "Error found in password" });
     } else {
       const user = new User({
         _id: mongoose.Types.ObjectId(),
@@ -29,7 +31,7 @@ router.post("/signup", (req, res, next) => {
           });
         })
         .catch((err) => {
-          res.status(500).json({ error: err });
+          res.status(500).json({ code: "1005", error: err });
         });
     }
   });
@@ -41,12 +43,15 @@ router.post("/login", (req, res, next) => {
     .then((user) => {
       if (user.length < 1) {
         res.status(401).json({
+          code: "1001",
           message: "Invalied username!",
         });
       } else {
         bcrypt.compare(req.body.password, user[0].password, (err, result) => {
           if (!result) {
-            return res.status(401).json({ message: "Invalied password!" });
+            return res
+              .status(401)
+              .json({ code: "1002", message: "Invalied password!" });
           } else {
             const token = jwt.sign(
               {
@@ -56,7 +61,7 @@ router.post("/login", (req, res, next) => {
                 email: user[0].email,
               },
               "secretOrPrivateKey",
-              { expiresIn: '02h' }
+              { expiresIn: "02h" }
             );
             return res.status(200).json({
               username: user[0].username,
@@ -70,7 +75,7 @@ router.post("/login", (req, res, next) => {
       }
     })
     .catch((err) => {
-      res.status(500).json({ error: err });
+      res.status(500).json({ code: "1003", error: err });
     });
 });
 module.exports = router;
