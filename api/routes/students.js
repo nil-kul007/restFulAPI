@@ -1,10 +1,17 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Student = require("../module/studentModule");
-
+const checkAuth = require("../middleware/check-auth");
+const cloudinary = require('cloudinary').v2;
 const router = express.Router();
 
-router.get("/", (req, res, next) => {
+cloudinary.config({
+  cloud_name: "dmydbbp2j",
+  api_key: "943721756815656",
+  api_secret: "ppt9baluGO4fXei5DD2gu1ethhI",
+});
+
+router.get("/", checkAuth, (req, res, next) => {
   Student.find()
     .select("_id name classNo rollNo")
     .exec()
@@ -19,7 +26,7 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.post("/", (req, res, next) => {
+router.post("/", checkAuth, (req, res, next) => {
   Student.find({ rollNo: req.body.rollNo, classNo: req.body.classNo })
     .exec()
     .then((result) => {
@@ -32,6 +39,7 @@ router.post("/", (req, res, next) => {
         email: req.body.email,
         address: req.body.address,
         classNo: req.body.classNo,
+        pic: req.body.pic
       });
       // console.log(result);
       if (result.length) {
@@ -44,7 +52,7 @@ router.post("/", (req, res, next) => {
       }
     })
     .then((result) => {
-      console.log(result);
+      // console.log(result);
       res.status(201).json({
         message: "New student added successfully",
       });
@@ -54,7 +62,7 @@ router.post("/", (req, res, next) => {
     });
 });
 
-router.get("/:studentId", (req, res, next) => {
+router.get("/:studentId", checkAuth, (req, res, next) => {
   const id = req.params.studentId;
   Student.findById(id)
     .exec()
@@ -68,7 +76,7 @@ router.get("/:studentId", (req, res, next) => {
     });
 });
 
-router.patch("/:studentId", (req, res, next) => {
+router.patch("/:studentId", checkAuth, (req, res, next) => {
   const id = req.params.studentId;
   const updateData = {};
   for (data of req.body) {
@@ -88,7 +96,7 @@ router.patch("/:studentId", (req, res, next) => {
     });
 });
 
-router.delete("/:studentId", (req, res, next) => {
+router.delete("/:studentId", checkAuth, (req, res, next) => {
   const id = req.params.studentId;
   Student.remove({ _id: id })
     .exec()
@@ -96,6 +104,35 @@ router.delete("/:studentId", (req, res, next) => {
       res.status(200).json({
         _id: id,
         message: "Student deleted successfully",
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err });
+    });
+});
+
+router.put("/:studentId", checkAuth, (req, res, next) => {
+  const id = req.params.studentId;
+  Student.findOneAndUpdate(
+    { _id: id },
+    {
+      $set: {
+        name: req.body.name,
+        gender: req.body.gender,
+        rollNo: req.body.rollNo,
+        contact: req.body.contact,
+        email: req.body.email,
+        address: req.body.address,
+        classNo: req.body.classNo,
+      },
+    }
+  )
+    .exec()
+    .then((result) => {
+      res.status(200).json({
+        _id: id,
+        message: "Student updated successfully",
+        data: result,
       });
     })
     .catch((err) => {
