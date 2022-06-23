@@ -125,6 +125,7 @@ router.put("/:studentId", checkAuth, (req, res, next) => {
         email: req.body.email,
         address: req.body.address,
         classNo: req.body.classNo,
+        pic: req.body.pic
       },
     }
   )
