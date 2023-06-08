@@ -2,14 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Student = require("../module/studentModule");
 const checkAuth = require("../middleware/check-auth");
-const cloudinary = require('cloudinary').v2;
 const router = express.Router();
 
-cloudinary.config({
-  cloud_name: "dmydbbp2j",
-  api_key: "943721756815656",
-  api_secret: "ppt9baluGO4fXei5DD2gu1ethhI",
-});
 
 router.get("/", checkAuth, (req, res, next) => {
   Student.find()

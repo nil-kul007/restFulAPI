@@ -7,43 +7,60 @@ const User = require("../module/userModule");
 const router = express.Router();
 
 router.post("/signup", (req, res, next) => {
-  bcrypt.hash(req.body.password, 10, (err, hash) => {
-    if (err) {
-      res
-        .status(500)
-        .json({ code: "1004", error: err, message: "Error found in password" });
-    } else {
-      const user = new User({
-        _id: mongoose.Types.ObjectId(),
-        username: req.body.username,
-        password: hash,
-        phoneNumber: req.body.phoneNumber,
-        email: req.body.email,
-        userType: req.body.userType,
-      });
-
-      user
-        .save()
-        .then((result) => {
-          res.status(201).json({
-            message: "New user added successfullhy",
-            data: result,
-          });
-        })
-        .catch((err) => {
-          res.status(500).json({ code: "1005", error: err });
+  User.find({ username: req.body.username })
+  .exec()
+    .then((user) => {
+      if (!user.length) {
+        bcrypt.hash(req.body.password, 10, (err, hash) => {
+          if (err) {
+            res
+              .status(500)
+              .json({ code: "1004", error: err, message: "Error found in password" });
+          } else {
+            const user = new User({
+              _id: mongoose.Types.ObjectId(),
+              username: req.body.username,
+              password: hash,
+              phoneNumber: req.body.phoneNumber,
+              email: req.body.email,
+              userType: req.body.userType,
+            });
+      
+            user
+              .save()
+              .then((result) => {
+                res.status(201).json({
+                  message: "New user added successfullhy",
+                  data: result,
+                });
+              })
+              .catch((err) => {
+                res.status(500).json({ code: "1005", error: err });
+              });
+          }
         });
-    }
-  });
+      } else {
+        res.status(401).json({
+          code: "1001",
+          message: "User already exist",
+        });
+      }
+    })
 });
 
+// https://localhost:3000/login
+// post
+// {
+//   username,
+//   password
+// }
 router.post("/login", (req, res, next) => {
   User.find({ username: req.body.username })
     .exec()
     .then((user) => {
       if (user.length < 1) {
         res.status(401).json({
-          code: "1001",
+          code: "1002",
           message: "Invalied username!",
         });
       } else {

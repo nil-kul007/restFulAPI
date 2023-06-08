@@ -9,10 +9,12 @@ const fileUpload = require("express-fileupload");
 const studentRoute = require("./api/routes/students");
 const teacherRoute = require("./api/routes/teacher");
 const userRoute = require("./api/routes/user");
+const clientRoute = require('./api/routes/clients')
 
 const app = express();
 // mongoose.connect(process.env.URI);
-mongoose.connect('mongodb+srv://nilkul:CMdHYrKen5mYTnnd@cluster0.ebp2n.mongodb.net/?retryWrites=true&w=majority');
+// mongoose.connect('mongodb+srv://nilkul:CMdHYrKen5mYTnnd@cluster0.ebp2n.mongodb.net/?retryWrites=true&w=majority');
+mongoose.connect('mongodb://localhost/college_mgt_system');
 mongoose.connection.on("error", (err) => {
   console.log("Mongo DB connection error: ", err);
 });
@@ -43,6 +45,7 @@ app.use((req, res, next) => {
 
 app.use("/student", studentRoute);
 app.use("/teacher", teacherRoute);
+app.use("/clients", clientRoute);
 app.use("/", userRoute);
 
 app.use((req, res, next) => {
