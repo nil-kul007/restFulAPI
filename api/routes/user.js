@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../module/userModule");
+const checkAuth = require("../middleware/check-auth")
 
 const router = express.Router();
 
@@ -93,6 +94,41 @@ router.post("/login", (req, res, next) => {
     })
     .catch((err) => {
       res.status(500).json({ code: "1003", error: err });
+    });
+});
+
+// router.patch("/resetPassword", checkAuth, (req, res, next) => {
+router.patch("/resetPassword", (req, res, next) => {
+  User.find({ username: req.body.username, email: req.body.email })
+    .exec()
+    .then((user) => {
+      const userId = user[0]._id
+      if (user.length) {
+        bcrypt.hash(req.body.password, 10, (err, hash) => {
+          if (err) {
+            res
+              .status(500)
+              .json({ code: "1004", error: err, message: "Error found in password" });
+          } else {
+            User.updateOne({ _id: userId }, { $set:{password: hash} })
+              .exec()
+              .then((result) => {
+                res.status(200).json({
+                  message: "Password updated successfully.",
+                  details: result,
+                });
+              })
+              .catch((err) => {
+                res.status(500).json({ code: "1005", error: err });
+              });
+          }
+        })
+      } else {
+        res.status(401).json({
+          code: "1003",
+          message: "Invalied username or email!",
+        });
+      }
     });
 });
 module.exports = router;

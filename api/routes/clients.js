@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/", checkAuth, (req, res, next) => {
   Clients.find()
-    .select("_id clientName client_TIN phoneNumber email address")
+    .select("_id clientName client_TIN")
     .exec()
     .then((result) => {
       res.status(200).json({
