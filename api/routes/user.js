@@ -16,7 +16,7 @@ router.post("/signup", (req, res, next) => {
           if (err) {
             res
               .status(500)
-              .json({ code: "1004", error: err, message: "Error found in password" });
+              .json({ code: "1005", error: err, message: "Error found in password" });
           } else {
             const user = new User({
               _id: mongoose.Types.ObjectId(),
@@ -36,25 +36,19 @@ router.post("/signup", (req, res, next) => {
                 });
               })
               .catch((err) => {
-                res.status(500).json({ code: "1005", error: err });
+                res.status(500).json({ code: "1006", error: err });
               });
           }
         });
       } else {
         res.status(401).json({
-          code: "1001",
+          code: "1004",
           message: "User already exist",
         });
       }
     })
 });
 
-// https://localhost:3000/login
-// post
-// {
-//   username,
-//   password
-// }
 router.post("/login", (req, res, next) => {
   User.find({ username: req.body.username })
     .exec()
@@ -69,7 +63,7 @@ router.post("/login", (req, res, next) => {
           if (!result) {
             return res
               .status(401)
-              .json({ code: "1002", message: "Invalied password!" });
+              .json({ code: "1003", message: "Invalied password!" });
           } else {
             const token = jwt.sign(
               {
@@ -93,7 +87,7 @@ router.post("/login", (req, res, next) => {
       }
     })
     .catch((err) => {
-      res.status(500).json({ code: "1003", error: err });
+      res.status(500).json({ code: "1001", error: err });
     });
 });
 
@@ -108,7 +102,7 @@ router.patch("/resetPassword", (req, res, next) => {
           if (err) {
             res
               .status(500)
-              .json({ code: "1004", error: err, message: "Error found in password" });
+              .json({ code: "1008", error: err, message: "Error found in password" });
           } else {
             User.updateOne({ _id: userId }, { $set:{password: hash} })
               .exec()
@@ -119,13 +113,13 @@ router.patch("/resetPassword", (req, res, next) => {
                 });
               })
               .catch((err) => {
-                res.status(500).json({ code: "1005", error: err });
+                res.status(500).json({ code: "1009", error: err });
               });
           }
         })
       } else {
         res.status(401).json({
-          code: "1003",
+          code: "1007",
           message: "Invalied username or email!",
         });
       }
