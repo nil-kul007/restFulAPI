@@ -6,8 +6,8 @@ require("dotenv").config();
 const fileUpload = require("express-fileupload");
 
 
-const studentRoute = require("./api/routes/students");
-const teacherRoute = require("./api/routes/teacher");
+// const studentRoute = require("./api/routes/students");
+// const teacherRoute = require("./api/routes/teacher");
 const userRoute = require("./api/routes/user");
 const clientRoute = require('./api/routes/clients')
 
@@ -43,8 +43,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/student", studentRoute);
-app.use("/teacher", teacherRoute);
+// app.use("/student", studentRoute);
+// app.use("/teacher", teacherRoute);
 app.use("/clients", clientRoute);
 app.use("/", userRoute);
 
